@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hello-n8n-pizzacode
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
