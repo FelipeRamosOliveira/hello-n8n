@@ -1,0 +1,17 @@
+{
+  "loja": "PizzaCode",
+  "horario": "Terça a domingo, 18h às 23h",
+  "entrega": "Grátis acima de R$ 60,00 num raio de 5 km",
+  "pizzas": [
+    { "nome": "Calabresa", "preco": 42.0, "vegana": false, "descricao": "Calabresa, cebola e mussarela" },
+    { "nome": "Margherita", "preco": 39.0, "vegana": false, "descricao": "Molho, mussarela, tomate e manjericão" },
+    { "nome": "Quatro Queijos", "preco": 48.0, "vegana": false, "descricao": "Mussarela, provolone, parmesão e gorgonzola" },
+    { "nome": "Verde Code (vegana)", "preco": 45.0, "vegana": true, "descricao": "Molho, queijo vegetal, abobrinha, rúcula e tomate seco" },
+    { "nome": "Portuguesa", "preco": 46.0, "vegana": false, "descricao": "Presunto, ovo, cebola, ervilha e mussarela" }
+  ],
+  "bebidas": [
+    { "nome": "Refrigerante lata", "preco": 6.0 },
+    { "nome": "Suco natural 500ml", "preco": 12.0 },
+    { "nome": "Água", "preco": 4.0 }
+  ]
+}
