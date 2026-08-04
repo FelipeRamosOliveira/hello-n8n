@@ -3,55 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeca · PizzaCode · LAB 365</title>
-<meta name="description" content="Demo educacional LAB 365 / SENAI — chat com o Zeca, assistente de IA da pizzaria fictícia PizzaCode, via widget oficial @n8n/chat.">
+<title>Zeca · Atendimento PizzaCode · LAB 365</title>
+<meta name="description" content="Demo educacional LAB 365 / SENAI — chat com o Zeca, assistente de IA da pizzaria fictícia PizzaCode, integrado via webhook n8n.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%95%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="bar-top" aria-hidden="true"></div>
 
 <header class="topbar">
-  <h1 class="page-title">🍕 Zeca · PizzaCode</h1>
-  <span class="badge">&lt;<b>LAB</b><span class="n">365</span>&gt; · IA para DEVs</span>
+  <div class="brand">
+    <span class="wordmark">&lt;<b>LAB</b><span class="n">365</span>&gt;</span>
+    <span class="badge">IA para DEVs · SENAI</span>
+  </div>
+  <button id="themeToggle" class="icon-btn" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+    <span aria-hidden="true">🌙</span>
+  </button>
 </header>
 
 <main class="wrap">
-  <div class="chat-card">
-    <div id="n8n-chat"></div>
-  </div>
-  <p class="footer">Demo educacional · LAB 365 / SENAI</p>
+  <section class="card" aria-label="Chat com o Zeca, assistente da PizzaCode">
+
+    <div class="chat-header">
+      <div class="chat-id">
+        <div class="avatar" aria-hidden="true">🍕</div>
+        <div>
+          <h1>Zeca</h1>
+          <p class="subtitle"><span class="dot" aria-hidden="true"></span>online · assistente PizzaCode</p>
+        </div>
+      </div>
+      <button id="settingsToggle" class="icon-btn" type="button" aria-expanded="false" aria-controls="settingsPanel" aria-label="Abrir configurações do webhook" title="Configurações">
+        <span aria-hidden="true">⚙️</span>
+      </button>
+    </div>
+
+    <div id="settingsPanel" class="settings" hidden>
+      <label for="webhookUrl">URL do Webhook n8n (Production URL do nó Webhook)</label>
+      <div class="row">
+        <input type="text" id="webhookUrl" placeholder="https://SEU-N8N/webhook/chat" autocomplete="off" spellcheck="false">
+        <button class="btn" id="saveUrl" type="button">Salvar</button>
+      </div>
+      <p class="hint">A URL fica salva só neste navegador (localStorage). Se der erro de <strong>CORS</strong>, ative <code>Allowed Origins (CORS) = *</code> no nó Webhook do n8n e republique o workflow.</p>
+    </div>
+
+    <div class="chips" id="chips" role="group" aria-label="Sugestões de pergunta">
+      <button class="chip" type="button">Tem pizza vegana?</button>
+      <button class="chip" type="button">Qual o horário de funcionamento?</button>
+      <button class="chip" type="button">Quanto custa uma calabresa?</button>
+      <button class="chip" type="button">Vocês entregam no meu bairro?</button>
+    </div>
+
+    <div id="chat" class="chat" role="log" aria-live="polite" aria-label="Histórico da conversa"></div>
+
+    <form id="composer" class="composer">
+      <label for="msgInput" class="sr-only">Mensagem para o Zeca</label>
+      <input type="text" id="msgInput" placeholder="Digite sua mensagem para o Zeca…" autocomplete="off">
+      <button class="btn" id="sendBtn" type="submit" aria-label="Enviar mensagem">Enviar</button>
+    </form>
+  </section>
+
+  <p class="footer">Demo educacional · LAB 365 / SENAI — este site não envia nem armazena pedidos reais.</p>
 </main>
 
-<script type="module">
-  import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-
-  // Troque aqui pela Production URL do webhook de chat do seu workflow n8n
-  // (nó "When chat message received" / Webhook de chat → aba Production URL).
-  const WEBHOOK_URL = 'https://felipe-ramos-oliveira-42.app.n8n.cloud/webhook/ce0d39c4-4b28-4f5b-97b7-9f8963d6afd0/chat';
-
-  createChat({
-    webhookUrl: WEBHOOK_URL,
-    target: '#n8n-chat',
-    mode: 'fullscreen',
-    showWelcomeScreen: false,
-    initialMessages: [
-      'Olá! Sou o Zeca, atendente da PizzaCode 🍕',
-      'Posso te ajudar com o cardápio e montar seu pedido. O que vai ser?',
-    ],
-    i18n: {
-      en: {
-        title: 'Zeca — PizzaCode',
-        subtitle: 'Assistente de atendimento com IA',
-        getStarted: 'Nova conversa',
-        inputPlaceholder: 'Digite sua mensagem...',
-      },
-    },
-  });
-</script>
+<script src="config.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
