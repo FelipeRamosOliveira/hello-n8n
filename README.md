@@ -2,65 +2,63 @@
 
 Site estático de chat, usado como demo de aula do curso **IA para DEVs** (LAB 365 / SENAI).
 É o front-end de um assistente de atendimento fictício, o **Zeca**, da pizzaria **PizzaCode**,
-que conversa com um agente de IA hospedado no **n8n** através de um webhook.
+que conversa com um agente de IA hospedado no **n8n**, usando o **widget oficial `@n8n/chat`**
+carregado via CDN (jsDelivr).
 
-100% HTML + CSS + JavaScript puro — sem backend próprio, sem chave de API no front-end,
-pronto para publicar como **Static Site** no Render (ou qualquer host estático).
+100% HTML + CSS + JavaScript puro — sem backend próprio, sem build, sem chave de API no
+front-end, pronto para publicar como **Static Site** no Render (ou qualquer host estático).
 
 ## Arquivos
 
-- `index.html` — estrutura da página e do chat.
-- `style.css` — identidade visual LAB 365 (cores, tipografia, dark mode, responsivo).
-- `config.js` — **único lugar obrigatório** para configurar a URL do webhook do n8n.
-- `app.js` — lógica do chat (envio, recebimento, erros, tema, chips).
+- `index.html` — página, container do widget e a chamada `createChat(...)`.
+- `style.css` — identidade visual LAB 365 (cores, tipografia, layout) e overrides das
+  CSS custom properties do widget `@n8n/chat`.
 - `render.yaml` — deploy automático opcional no Render.
+
+> Se você mantiver um `cardapio.json` na raiz do repo (dados usados pelo agente n8n),
+> ele não é lido pelo front-end — sirva apenas de referência/fonte para o workflow.
 
 ## 1. Configurar a `WEBHOOK_URL`
 
-Abra `config.js` e troque o placeholder pela **Production URL** do nó Webhook do seu
-workflow n8n (não a "Test URL"):
+Abra `index.html` e edite a constante `WEBHOOK_URL`, dentro do `<script type="module">`
+no final do arquivo:
 
 ```js
-window.WEBHOOK_URL = "https://sua-instancia.app.n8n.cloud/webhook/chat";
+// Troque aqui pela Production URL do webhook de chat do seu workflow n8n
+const WEBHOOK_URL = 'https://SEU-N8N/webhook/SEU-ID/chat';
 ```
 
-Alternativa rápida para testar sem editar arquivo: no site, clique no ícone ⚙️ no
-cabeçalho do chat, cole a URL e clique em "Salvar". Essa URL fica guardada só no seu
-navegador (`localStorage`) e tem prioridade sobre a do `config.js` — útil em aula, mas
-opcional.
+Use a **Production URL** do nó de chat do workflow (não a "Test URL").
 
-### Contrato esperado do webhook
+## 2. Configuração necessária no n8n
 
-- **Requisição:** `POST` com header `Content-Type: application/json` e corpo:
-  ```json
-  { "mensagem": "texto digitado pelo usuário" }
-  ```
-- **Resposta:** aceita **texto puro** ou **JSON** no formato:
-  ```json
-  { "resposta": "texto de volta do agente" }
-  ```
-  (também são aceitos os campos `output` ou `text` como alternativa a `resposta`).
-- Erros HTTP (4xx/5xx) e falhas de rede/CORS são tratados e exibidos de forma amigável
-  no próprio chat.
+Para o widget conversar com o workflow, no n8n:
 
-## 2. Testar localmente
+1. No nó de chat do workflow, ative **"Make Chat Publicly Available"** com o modo
+   **"Embedded"** (é o que permite embutir o widget num site externo).
+2. Em **Allowed Origins (CORS)**, defina `*` (mais simples para demo/aula) ou a URL exata
+   do site publicado (ex.: `https://hello-n8n.onrender.com`).
+3. O workflow precisa estar **Publicado/Ativo** — com o editor salvo mas o workflow
+   desativado, o webhook não responde.
+4. **Atenção ao trial do n8n Cloud:** o plano de teste expira em **14 dias**; passado esse
+   prazo a instância para e o `WEBHOOK_URL` deixa de responder (o chat mostra erro de rede).
+   Se isso acontecer durante a aula, é preciso reativar/assinar a instância n8n ou apontar
+   para uma nova.
 
-Não precisa de servidor nem de build: é só abrir o arquivo direto no navegador.
+## 3. Testar localmente
 
-```bash
-open index.html   # macOS
-# ou dê duplo-clique no arquivo no Finder/Explorer
-```
-
-Se preferir servir por HTTP (opcional, mas evita eventuais bloqueios de `file://` em
-alguns navegadores):
+Não precisa de build. Como a página importa o widget via `<script type="module">` e CDN,
+o mais confiável é servir por HTTP (alguns navegadores restringem ES modules em `file://`):
 
 ```bash
 python3 -m http.server 8080
 # depois acesse http://localhost:8080
 ```
 
-## 3. Publicar no Render (Static Site)
+Abrir `index.html` direto com duplo-clique também costuma funcionar na maioria dos
+navegadores modernos, mas prefira o passo acima se o widget não carregar.
+
+## 4. Publicar no Render (Static Site)
 
 1. Suba este projeto para um repositório no GitHub.
 2. No [Render](https://render.com), clique em **New +** → **Static Site**.
@@ -74,19 +72,8 @@ python3 -m http.server 8080
 Se preferir, use o `render.yaml` incluso (Render detecta e aplica a configuração
 automaticamente ao conectar o repositório com "Blueprint").
 
-## 4. Nota importante sobre CORS
-
-Como o site chama o webhook diretamente do navegador, o n8n precisa permitir a origem
-do Render. No nó **Webhook** do seu workflow:
-
-1. Abra as opções do nó → **Allowed Origins (CORS)**.
-2. Defina como `*` (qualquer origem — mais simples para demo/aula) ou, para restringir,
-   coloque a URL exata do seu site no Render (ex.: `https://hello-n8n.onrender.com`).
-3. **Salve e republique o workflow** (a alteração só vale depois de reativar/publicar).
-
-Se aparecer erro de rede/CORS no chat, esse é o primeiro lugar a conferir.
-
 ## Sobre
 
 Demo educacional do curso **IA para DEVs** — LAB 365 / SENAI. Não processa pedidos
-reais nem armazena dados de clientes.
+reais nem armazena dados de clientes. A Chat URL usada no código é o endpoint público
+de chat do workflow (não é uma chave secreta), por isso pode ficar versionada.
